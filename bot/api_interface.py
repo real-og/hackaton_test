@@ -1,7 +1,7 @@
 from loader import BASE_URL, BANK_CODE
 import requests
 
-BASE_URL='http://46.19.65.223:8000/'
+BASE_URL='http://46.19.65.223:7998/'
 headers = {'accept': "application/json"}
 
 def get_available_banks():
