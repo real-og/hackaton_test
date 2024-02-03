@@ -12,4 +12,6 @@ async def send_welcome(message: types.Message, state: FSMContext):
 @dp.message_handler(commands=['start'], state="*")
 async def send_welcome(message: types.Message, state: FSMContext):
     await message.answer(texts.start_mess, reply_markup=kb.choose_bank_kb)
+    await state.update_data(chosen_bank=None)
+    await state.update_data(chosen_currency=None)
     await State.choosing_bank.set()
