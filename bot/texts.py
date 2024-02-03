@@ -14,9 +14,12 @@ choose_another_currency = 'Выбери другую валюту'
 
 
 
-
+choose_date = 'Выберите дату'
 
 invalid_input = 'Вы ввели что-то не так... Воспользуйтесь ккнопками'
 
 def generate_today_rate(bank, currency):
-    return f"some data from api"
+    return f"some data from api {bank} {currency}"
+
+def generate_rate_by_day(day, month, year):
+    return f"day{day} month {month} year {year}"

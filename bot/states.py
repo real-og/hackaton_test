@@ -6,3 +6,4 @@ class State(StatesGroup):
     choosing_bank = State()
     choosing_currency = State()
     choosing_operation = State()
+    choosing_date = State()
