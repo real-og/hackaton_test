@@ -7,7 +7,7 @@ import requests
 
 @app.get("/api/banks")
 async def all_banks():
-    spisok = ["Нацбанк Республики Беларусь", "Альфа-Банк", "Беларусбанк"]
+    spisok = ["Национальный банк", "Альфа банк", "Беларусбанк"]
     return spisok
 
 
@@ -75,6 +75,8 @@ async def currencie_rate_ondate(bank: BanksName, currencyCode: str = "840", your
             "643": "RUB",
             "978": "EUR",
         }
+        if currencyCode not in currencies_list:
+            return Response(status_code=status.HTTP_404_NOT_FOUND)
         currencie = currencies_list[currencyCode]
         url = "https://belarusbank.by/api/kurs_cards"
         response = requests.get(url)
@@ -92,30 +94,64 @@ async def currencie_rate_ondate(bank: BanksName, currencyCode: str = "840", your
                             spisok[curr] = date_time[curr]
 
                     spisok["date"] = yourdate
-
                     return spisok
 
         else:
             return Response(status_code=status.HTTP_404_NOT_FOUND)
 
 
-    # if bank == "nbrb":
+    if bank == "nbrb":
+
+        url = f'https://api.nbrb.by/exrates/rates/{currencyCode}'
+        yourdate = str(yourdate)[0:10]
+        headers = {'ondate': yourdate}
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            data = response.json()
+            answer = {
+                "Date": data["Date"],
+                "OfficialRate": data["Cur_OfficialRate"]
+            }
+            return answer
+        else:
+            return Response(status_code=status.HTTP_404_NOT_FOUND)
 
 
 
 
 
 @app.get("/Rate/rates")
-async def read_item(bank: BanksName, currencyCode: str = "933", fromdate: datetime = "2008-09-15",
-                    todate: datetime = "2008-09-16"):
-    return [
-        {
-            "date": "somedate",
-            "sellRate": "somesellRate",
-            "buyRate": "somebuyRatee",
-        }
-    ]
+async def read_item(bank: BanksName, currencyCode: str = "840", fromdate: datetime = "2024-02-01",
+                    todate: datetime = "2024-02-02"):
 
+    if bank == "alfabank" or bank == "belarusbank":
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
+
+    url = f'https://api.nbrb.by/exrates/rates/dynamics/{currencyCode}'
+
+    if todate < fromdate:
+        return Response(status_code=status.HTTP_400_BAD_REQUEST)
+
+
+    headers = {'startDate': str(fromdate)[0:10],
+               'endDate': str(todate)[0:10]
+               }
+    print(headers)
+
+    response = requests.get(url, params=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+
+        if data:
+            for date in data:
+                del date['Cur_ID']
+            return data
+        else:
+            return Response(status_code=status.HTTP_404_NOT_FOUND)
+    else:
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
 
 @app.get("/Rate/statistics")
 async def read_item(bank: BanksName, currencyCode: str = "933", fromdate: datetime = "2008-09-15",
