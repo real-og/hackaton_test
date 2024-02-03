@@ -6,8 +6,12 @@ import os
 
 
 logging.basicConfig(level=logging.WARNING)
-
 BOT_TOKEN = str(os.environ.get('BOT_TOKEN'))
+
+
+# may be got from API 
+AVAILABLE_BANKS = ['Национальный банк', 'Альфа банк', 'Беларусбанк']
+AVAILABLE_CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY']
 
 # storage = RedisStorage2(db=2)
 storage = MemoryStorage()
