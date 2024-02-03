@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Response, status, Depends
+from fastapi import FastAPI, Response, status
 from enum import Enum
-from datetime import datetime, date
-from typing import Annotated
+from datetime import datetime
 app = FastAPI()
 import requests
+import pandas as pd
 
 @app.get("/api/banks")
 async def all_banks():
@@ -95,6 +95,8 @@ async def currencie_rate_ondate(bank: BanksName, currencyCode: str = "840", your
 
                     spisok["date"] = yourdate
                     return spisok
+            if not spisok:
+                return Response(status_code=status.HTTP_404_NOT_FOUND)
 
         else:
             return Response(status_code=status.HTTP_404_NOT_FOUND)
@@ -154,8 +156,52 @@ async def read_item(bank: BanksName, currencyCode: str = "840", fromdate: dateti
         return Response(status_code=status.HTTP_404_NOT_FOUND)
 
 @app.get("/Rate/statistics")
-async def read_item(bank: BanksName, currencyCode: str = "933", fromdate: datetime = "2008-09-15",
-                    todate: datetime = "2008-09-16"):
+async def read_item(bank: BanksName, currencyCode: str = "456", fromdate: datetime = "2024-01-01",
+                    todate: datetime = "2024-01-10"):
+
+    if bank == "nbrb":
+
+        url = f'https://api.nbrb.by/exrates/rates/dynamics/{currencyCode}'
+
+        if todate < fromdate:
+            return Response(status_code=status.HTTP_400_BAD_REQUEST)
+
+        headers = {'startDate': str(fromdate)[0:10],
+                   'endDate': str(todate)[0:10]
+                   }
+
+        response = requests.get(url, params=headers)
+
+        if response.status_code == 200:
+            data = response.json()
+            df = pd.DataFrame(data)
+            average_rate = round(df['Cur_OfficialRate'].mean(), 3)
+            max_rate = round(df['Cur_OfficialRate'].max(), 3)
+            min_rate = round(df['Cur_OfficialRate'].min(), 3)
+            return {
+                'Average value' : average_rate,
+                'Max value' : max_rate,
+                'Min value' : min_rate,
+            }
+
+            # # Graph
+            # df['Date'] = pd.to_datetime(df['Date'])
+            # df.set_index('Date', inplace=True)
+            # df['Cur_OfficialRate'].plot(title='Official Exchange Rate Over Time', xlabel='Date', ylabel='Exchange Rate')
+            # plt.show()
+
+        else:
+            return Response(status_code=status.HTTP_404_NOT_FOUND)
+
+
+
+
+
+
+
+
+
+
     return {
         "date": "somedate",
         "sellRate": "somesellRate",
