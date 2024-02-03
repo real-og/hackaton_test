@@ -13,7 +13,6 @@ choose_bank = 'Выбери банк из меню внизу'
 choose_another_currency = 'Выбери другую валюту'
 
 
-
 choose_date = 'Выберите дату'
 
 invalid_input = 'Вы ввели что-то не так... Воспользуйтесь ккнопками'
@@ -23,3 +22,6 @@ def generate_today_rate(bank, currency):
 
 def generate_rate_by_day(day, month, year):
     return f"day{day} month {month} year {year}"
+
+def generate_stats(bank, currency):
+    return f"{bank} {currency} stats"

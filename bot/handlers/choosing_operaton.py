@@ -30,6 +30,8 @@ async def send_welcome(message: types.Message, state: FSMContext):
         await state.update_data(year=year)
         await message.answer(texts.choose_date, reply_markup=kb.generate_calendar_kb(month, year))
         await State.choosing_date.set()
+    elif user_input == buttons.collect_stats:
+        await message.answer(texts.generate_stats(bank, currency), reply_markup=kb.choose_operation_kb)
     else:
         await message.answer(texts.invalid_input)
 
