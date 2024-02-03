@@ -17,3 +17,6 @@ choose_another_currency = 'Выбери другую валюту'
 
 
 invalid_input = 'Вы ввели что-то не так... Воспользуйтесь ккнопками'
+
+def generate_today_rate(bank, currency):
+    return f"some data from api"
