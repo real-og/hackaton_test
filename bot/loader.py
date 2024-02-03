@@ -7,6 +7,17 @@ import os
 
 logging.basicConfig(level=logging.WARNING)
 BOT_TOKEN = str(os.environ.get('BOT_TOKEN'))
+BASE_URL = str(os.environ.get('BASE_URL'))
+
+CURRENCY_CODE ={"USD": 840,
+                "EUR": 978,
+                'GBP': 826,
+                'JPY': 392}
+
+BANK_CODE ={"Национальный банк": 'nbrb',
+                "Альфа банк": 'alfabank',
+                'Беларусбанк': 'belarusbank',
+              }
 
 NUM_BY_MONTH_NAME = {"January": 1,
                      "February": 2,

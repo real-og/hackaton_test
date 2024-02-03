@@ -12,6 +12,8 @@ import logic
 async def send_series(callback: types.CallbackQuery, state: FSMContext):
     user_input = callback.data
     data = await state.get_data()
+    bank = data.get('chosen_bank')
+    currency = data.get('chosen_currency')
     month = data.get('month')
     year = data.get('year')
     if user_input == '<' or user_input == '>':
@@ -27,7 +29,7 @@ async def send_series(callback: types.CallbackQuery, state: FSMContext):
     if user_input.isdigit():
         await state.update_data(day=user_input)
         await callback.message.delete()
-        await callback.message.answer(texts.generate_rate_by_day(user_input, month, year), reply_markup=kb.choose_operation_kb)
+        await callback.message.answer(texts.generate_rate_by_day(user_input, month, year, bank, currency), reply_markup=kb.choose_operation_kb)
         await State.choosing_operation.set()
 
     await bot.answer_callback_query(callback.id)

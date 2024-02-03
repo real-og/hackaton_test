@@ -21,6 +21,7 @@ async def send_welcome(message: types.Message, state: FSMContext):
     elif user_input == buttons.choose_another_currency:
         await message.answer(texts.choose_another_currency, reply_markup=kb.choose_currency_kb)
         await State.choosing_currency.set()
+        
     elif user_input == buttons.rate_today:
         await message.answer(texts.generate_today_rate(bank, currency), reply_markup=kb.choose_operation_kb)
     elif user_input == buttons.rate_by_day:
